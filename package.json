@@ -4,7 +4,8 @@
   "description": "1. node|nodemon --inspect-brk debugger.js 2. chrome browser to type chrome://inspect/#devices 3. choose open dedicated DevTools for Node 4. debugger your application",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
