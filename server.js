@@ -28,9 +28,9 @@ app.use((req, res, next) => {
     });
     next();
 });
-app.use((req, res, next) => {
-    res.render('maintenance');
-});
+// app.use((req, res, next) => {
+//     res.render('maintenance');
+// });
 //middleware for setting up public folder
 app.use(express.static(path.join(__dirname, 'public')));
 //route
