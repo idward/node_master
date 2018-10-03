@@ -57,7 +57,7 @@ app.get('/todos/:id', (req, res) => {
         res.status(400).send(e);
     });
 });
-
+//delete single todo data from database
 app.delete('/todos/:id', (req, res) => {
     const id = req.params.id;
 
@@ -75,7 +75,7 @@ app.delete('/todos/:id', (req, res) => {
         res.status(400).send(e);
     });
 });
-
+//update single todo data from database
 app.patch('/todos/:id', (req, res) => {
     const id = req.params.id;
 
@@ -101,8 +101,7 @@ app.patch('/todos/:id', (req, res) => {
         res.status(400).send();
     });
 });
-
-
+//post user to database
 app.post('/users', (req, res) => {
     const body = _.pick(req.body, ['email', 'password']);
 
@@ -117,11 +116,11 @@ app.post('/users', (req, res) => {
         res.status(400).send(e);
     });
 });
-
+//get user from database
 app.get('/users/me', authenticate, (req, res) => {
     res.send(req.user);
 });
-
+//server starts up
 app.listen(port, () => {
     console.log('The server is listening on port 3000');
 });
