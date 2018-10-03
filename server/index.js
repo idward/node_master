@@ -101,6 +101,22 @@ app.patch('/todos/:id', (req, res) => {
     });
 });
 
+
+app.post('/users', (req, res) => {
+    const body = _.pick(req.body, ['email', 'password']);
+
+    const user = new User(body);
+
+    user.save().then(() => {
+        return user.generateAuthToken();
+    }).then(token => {
+        let userInfo = user.convertToJSON();
+        return res.header('x-auth', token).send(userInfo);
+    }).catch(e => {
+        res.status(400).send(e);
+    });
+});
+
 app.listen(port, () => {
     console.log('The server is listening on port 3000');
 });
