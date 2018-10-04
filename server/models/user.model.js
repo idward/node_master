@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
-const bycrpt = require('bcryptjs');
+const bcrypt = require('bcryptjs');
 const _ = require('lodash');
 
 const UserSchema = new mongoose.Schema({
@@ -40,9 +40,9 @@ UserSchema.pre('save', function (next) {
     let user = this;
 
     if (user.isModified('password')) {
-        bycrpt.genSalt(10, (err, salt) => {
+        bcrypt.genSalt(10, (err, salt) => {
             if (err) return next(err);
-            bycrpt.hash(user.password, salt, (err, hash) => {
+            bcrypt.hash(user.password, salt, (err, hash) => {
                 if (err) return next(err);
                 user.password = hash;
                 return next();
@@ -73,6 +73,16 @@ UserSchema.methods.generateAuthToken = function () {
     });
 }
 
+UserSchema.methods.removeToken = function (token) {
+    let user = this;
+
+    return user.update({
+        $pull: {
+            tokens: {token}
+        }
+    });
+}
+
 UserSchema.statics.findByToken = function (token) {
     let user = this;
     let decode;
@@ -87,6 +97,27 @@ UserSchema.statics.findByToken = function (token) {
         '_id': decode.id,
         'tokens.token': token,
         'tokens.access': 'auth'
+    });
+}
+
+UserSchema.statics.findByCredientials = function (email, password) {
+    let user = this;
+
+    return user.findOne({email}).then(user => {
+        if (!user) {
+            return Promise.reject(new Error('Email is not correct'));
+        }
+
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, (err, result) => {
+                if (err) return reject(err);
+                if (result) {
+                    return resolve(user);
+                } else {
+                    return reject(new Error('Password is not correct'));
+                }
+            });
+        });
     });
 }
 
